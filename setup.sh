@@ -7,4 +7,4 @@ ln -s ~/.dotfiles/gitconfig ~/.gitconfig
 ln -s ~/.dotfiles/gitconfig ~/.gitignore_global
 ln -s ~/.dotfiles/gemrc ~/.gemrc
 
-echo '!!! Don't forget to update .gitconfig !!!'
+echo '!!! Dont forget to update .gitconfig !!!'
