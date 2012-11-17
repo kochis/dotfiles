@@ -1,0 +1,14 @@
+--smart-case
+--type-add=ruby=.haml,.feature
+--type-add=css=.sass,.scss
+--type-set=tags=tags
+--type-set=coffee=coffee
+--notags
+--ignore-dir=tmp
+--ignore-dir=.sass-cache
+--ignore-dir=log
+--ignore-dir=coverage
+--type-set=junk=.pyc,.css
+--type-set=zope=.zcml,.ini
+--type-set=coffeescript=.coffee
+--nojunk
