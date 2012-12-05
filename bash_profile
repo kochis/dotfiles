@@ -143,5 +143,7 @@ alias glx='git log --graph --all --decorate --pretty=format:"%C(magenta)%h %C(bl
 
 alias hglog='hg sglog | less -R'
 
+alias tmux='tmux -2'
+
 export EDITOR=vim
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/share/python:$PATH
