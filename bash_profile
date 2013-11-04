@@ -1,3 +1,5 @@
+source ~/.git-prompt.sh
+
 if [[ `uname` == Darwin ]]; then
   if [ -f `brew --prefix autojump`/etc/autojump ]; then
       source `brew --prefix autojump`/etc/autojump
