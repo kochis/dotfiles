@@ -7,6 +7,7 @@
 --ignore-dir=tmp
 --ignore-dir=.sass-cache
 --ignore-dir=log
+--ignore-dir=error_pages
 --ignore-dir=coverage
 --type-set=junk=.pyc,.css
 --type-set=zope=.zcml,.ini
