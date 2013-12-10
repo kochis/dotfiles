@@ -58,6 +58,7 @@ alias ll='ls -Al'
 alias mkdir='mkdir -p'
 alias which='type -a'
 alias ..='cd ..'
+alias cl='clear'
 
 alias du='du -kh'
 alias df='df -kTh'
@@ -101,6 +102,7 @@ alias glx="git log --graph --decorate --all --oneline"
 
 alias glxx='git log --graph --all --decorate'
 alias glx='git log --graph --all --decorate --pretty=format:"%C(magenta)%h %C(blue)%ai %C(green)%an %C(cyan)%s %C(yellow bold)%d"'
+
 function __current_branch {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
@@ -126,6 +128,14 @@ function awklog {
   eval "awk ' /^$/ {flag=0} /Started.+$2/ {flag=1} flag { print }' $1"
 }
 
+function pgrep () {
+  ps aux | grep $1 | grep -v 'grep'
+}
+
+function pkill () {
+  kill -9 $(ps -Ao pid,comm | grep $1 | grep -v 'grep' | awk '{print $1'}) 2>&1
+}
+
 alias ll='ls -al'
 alias be='bundle exec'
 
@@ -148,4 +158,8 @@ alias hglog='hg sglog | less -R'
 alias tmux='tmux -2'
 
 export EDITOR=vim
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/share/python:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/share/python:/usr/local/smlnj-110.75/bin:$PATH
+
+if [ -f ~/.env_keys.sh  ]; then
+    source ~/.env_keys.sh
+fi
