@@ -22,8 +22,6 @@ fi
 
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
-
 # colors
 COLOR_NONE='\[\033[0m\]'
 COLOR_BOLD='\[\033[1m\]'
@@ -138,7 +136,9 @@ function pkill () {
 }
 
 export EDITOR=vim
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$HOME/.rvm/bin:$PATH
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 
 if [ -f ~/.env_keys.sh  ]; then
     source ~/.env_keys.sh
