@@ -6,7 +6,7 @@ Make sure git bash completion is installed
 
 Clone repo and run script
 
-`git clone git://github.com/kochis/dotfiles.git ~/.dotfiles && ~/.dotfiles/setup.sh`
+`git clone git@github.com:kochis/dotfiles.git ~/.dotfiles && ~/.dotfiles/setup.sh`
 
 If getting `exited` error in OSX, make sure `reattach-to-user-namespace` is installed
 
