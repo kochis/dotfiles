@@ -20,6 +20,8 @@ if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
     source /usr/local/share/python/virtualenvwrapper.sh
 fi
 
+[[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
+
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 
 # colors
@@ -117,6 +119,7 @@ function gmox {
 function grox {
   __current_branch_action "rebase origin/"
 }
+
 function gpox {
   __current_branch_action "push origin "
 }
@@ -135,7 +138,7 @@ function pkill () {
 }
 
 export EDITOR=vim
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/share/python:/usr/local/smlnj-110.75/bin:$PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$PATH
 
 if [ -f ~/.env_keys.sh  ]; then
     source ~/.env_keys.sh
