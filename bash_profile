@@ -143,3 +143,9 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$HOME/.rv
 if [ -f ~/.env_keys.sh  ]; then
     source ~/.env_keys.sh
 fi
+
+if hash rbenv 2>/dev/null; then
+  eval "$(rbenv init -)"
+fi
+
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
