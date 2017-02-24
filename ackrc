@@ -9,6 +9,8 @@
 --ignore-dir=log
 --ignore-dir=error_pages
 --ignore-dir=coverage
+--ignore-file=match:bundle.js
+--ignore-file=is:tags
 --type-set=junk=.pyc,.css
 --type-set=zope=.zcml,.ini
 --type-set=coffeescript=.coffee

@@ -135,6 +135,15 @@ function pkill () {
   kill -9 $(ps -Ao pid,comm | grep $1 | grep -v 'grep' | awk '{print $1'}) 2>&1
 }
 
+function generate-tags() {
+  ctags -R -V --options=$HOME/.ctags.cnf
+}
+
+function feature {
+  echo "RAILS_ENV=feature TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1"
+  RAILS_ENV=feature TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1
+}
+
 export EDITOR=vim
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$HOME/.rvm/bin:$PATH
 
