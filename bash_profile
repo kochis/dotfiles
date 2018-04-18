@@ -140,7 +140,7 @@ function generate-tags() {
 }
 
 function feature {
-  echo "RAILS_ENV=feature TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1"
+  echo "RAILS_ENV=feature RENDER_NEW_PDP=true TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1"
   RAILS_ENV=feature TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1
 }
 
@@ -157,4 +157,4 @@ if hash rbenv 2>/dev/null; then
   eval "$(rbenv init -)"
 fi
 
-export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
+eval "$(direnv hook bash)"
