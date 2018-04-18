@@ -144,6 +144,10 @@ function feature {
   RAILS_ENV=feature TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1
 }
 
+function nginx-logs {
+  tail -f /usr/local/Cellar/nginx/1.12.1/logs/*.log
+}
+
 export EDITOR=vim
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$HOME/.rvm/bin:$PATH
 
@@ -158,3 +162,5 @@ if hash rbenv 2>/dev/null; then
 fi
 
 eval "$(direnv hook bash)"
+
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
