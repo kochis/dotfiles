@@ -12,3 +12,5 @@ ln -s ~/.dotfiles/ctags.cnf ~/.ctags.cnf
 
 echo '!!! Dont forget to update .gitconfig !!!'
 echo 'NOTE: brew install reattach-to-user-namespace if tmux wont start'
+
+./check_shell.sh
