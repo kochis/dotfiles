@@ -61,7 +61,6 @@ alias ..='cd ..'
 alias cl='clear'
 alias du='du -kh'
 alias df='df -kTh'
-alias vim='mvim -v'
 
 alias r='bundle exec rails'
 alias b='bundle exec'
@@ -146,6 +145,10 @@ function feature {
 
 function nginx-logs {
   tail -f /usr/local/Cellar/nginx/1.12.1/logs/*.log
+}
+
+function rebase-master {
+  git checkout master && git fetch && git rebase
 }
 
 export EDITOR=vim
