@@ -135,7 +135,8 @@ function pkill () {
 }
 
 function generate-tags() {
-  ctags -R -V --options=$HOME/.ctags.cnf
+  # use the ctags installed from homebrew
+  /usr/local/bin/ctags -R -V --options=$HOME/.ctags.cnf
 }
 
 function feature {
@@ -149,6 +150,36 @@ function nginx-logs {
 
 function rebase-master {
   git checkout master && git fetch && git rebase
+}
+
+function kill-server {
+  docker stop server_web_1
+  docker stop server_worker_1
+  docker stop server_sut_1
+  docker stop server_mongo_1
+  docker stop server_redis-cluster-init_1
+  docker stop server_redis-cluster-1-1
+  docker stop server_redis-cluster-2-1
+  docker stop server_redis-cluster-3-1
+  docker stop server_redis-cluster-1_1
+  docker stop server_redis-cluster-2_1
+  docker stop server_redis-cluster-3_1
+
+  docker stop server-web-1
+  docker stop server-worker-1
+  docker stop server-sut-1
+  docker stop server-mongo-1
+  docker stop server-redis-cluster-init-1
+  docker stop server-redis-cluster-1-1
+  docker stop server-redis-cluster-2-1
+  docker stop server-redis-cluster-3-1
+  docker stop server-redis-cluster-1-1
+  docker stop server-redis-cluster-2-1
+  docker stop server-redis-cluster-3-1
+}
+
+function docker-clean {
+  docker system prune --all --volumes
 }
 
 export EDITOR=vim
