@@ -10,7 +10,8 @@ ln -s ~/.dotfiles/git-prompt.sh ~/.git-prompt.sh
 ln -s ~/.dotfiles/tmux.conf ~/.tmux.conf
 ln -s ~/.dotfiles/ctags.cnf ~/.ctags.cnf
 
+./check_shell.sh
+./install_apps.sh
+
 echo '!!! Dont forget to update .gitconfig !!!'
 echo 'NOTE: brew install reattach-to-user-namespace if tmux wont start'
-
-./check_shell.sh
