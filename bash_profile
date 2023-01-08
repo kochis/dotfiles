@@ -20,6 +20,8 @@ if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
     source /usr/local/share/python/virtualenvwrapper.sh
 fi
 
+export FZF_DEFAULT_COMMAND='rg --files'
+
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 
 # colors
@@ -136,65 +138,23 @@ function pkill () {
 
 function generate-tags() {
   # use the ctags installed from homebrew
-  /usr/local/bin/ctags -R -V --options=$HOME/.ctags.cnf
-}
-
-function feature {
-  echo "RAILS_ENV=feature RENDER_NEW_PDP=true TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1"
-  RAILS_ENV=feature TEST_LOCAL=1 SELENIUM_BROWSER=chrome bundle exec rspec $1
-}
-
-function nginx-logs {
-  tail -f /usr/local/Cellar/nginx/1.12.1/logs/*.log
+  /opt/homebrew/bin/ctags -R -V --options=$HOME/.ctags.cnf
 }
 
 function rebase-master {
   git checkout master && git fetch && git rebase
 }
 
-function kill-server {
-  docker stop server_web_1
-  docker stop server_worker_1
-  docker stop server_sut_1
-  docker stop server_mongo_1
-  docker stop server_redis-cluster-init_1
-  docker stop server_redis-cluster-1-1
-  docker stop server_redis-cluster-2-1
-  docker stop server_redis-cluster-3-1
-  docker stop server_redis-cluster-1_1
-  docker stop server_redis-cluster-2_1
-  docker stop server_redis-cluster-3_1
-
-  docker stop server-web-1
-  docker stop server-worker-1
-  docker stop server-sut-1
-  docker stop server-mongo-1
-  docker stop server-redis-cluster-init-1
-  docker stop server-redis-cluster-1-1
-  docker stop server-redis-cluster-2-1
-  docker stop server-redis-cluster-3-1
-  docker stop server-redis-cluster-1-1
-  docker stop server-redis-cluster-2-1
-  docker stop server-redis-cluster-3-1
-}
-
 function docker-clean {
   docker system prune --all --volumes
 }
 
-export EDITOR=vim
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/smlnj-110.75/bin:$HOME/.rvm/bin:$PATH
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
+alias vim=nvim
+export EDITOR=nvim
+export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH"
 
 if [ -f ~/.env_keys.sh  ]; then
     source ~/.env_keys.sh
 fi
-
-if hash rbenv 2>/dev/null; then
-  eval "$(rbenv init -)"
-fi
-
-eval "$(direnv hook bash)"
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
