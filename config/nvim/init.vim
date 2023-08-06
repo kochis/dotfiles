@@ -21,6 +21,11 @@ Plug 'vim-airline/vim-airline-themes'
 " commands like :Rename and :Remove
 Plug 'tpope/vim-eunuch'
 
+" Git utils
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-git'
+
 " Comment with gc (takes a motion) or ^_^_
 Plug 'tomtom/tcomment_vim'
 
@@ -33,11 +38,12 @@ Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 
+" handlebars highlighting
+Plug 'mustache/vim-mustache-handlebars'
+
 " COC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_global_extensions = [
-  \ 'coc-tsserver'
-  \ ]
+let g:coc_global_extensions = ['coc-tsserver']
 
 if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
   let g:coc_global_extensions += ['coc-eslint']
@@ -112,7 +118,10 @@ set modelines=10
 " brew install ctags
 " $ ctags -R .
 map <Leader>rt :!ctags --extra=+f -R *<CR><CR>
-map <C-\> :tnext<CR>
+
+" jump to definition with coc
+map <C-]> <Plug>(coc-definition)
+" nmap <silent> gd <Plug>(coc-definition)
 
 " Remember last location in file
 if has("autocmd")
@@ -131,11 +140,8 @@ au BufNewFile,BufRead *.hamlc set ft=haml
 au BufNewFile,BufRead *.jst.ejs set ft=jst
 
 " set correct filetypes for React
-augroup ReactFiletypes
-  autocmd!
-  autocmd BufRead,BufNewFile *.jsx set filetype=javascriptreact
-  autocmd BufRead,BufNewFile *.tsx set filetype=typescriptreact
-augroup END
+autocmd BufRead,BufNewFile *.jsx set filetype=javascriptreact
+autocmd BufRead,BufNewFile *.tsx set filetype=typescriptreact
 
 " Add typescript filename support
 autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
@@ -147,6 +153,9 @@ au FileType * set softtabstop=2 tabstop=2 shiftwidth=2
 
 " make Python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
 au FileType python set softtabstop=4 tabstop=4 shiftwidth=4 textwidth=79
+
+" highlighting handelbar files
+au BufRead,BufNewFile *.hbs set filetype=handlebars
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start

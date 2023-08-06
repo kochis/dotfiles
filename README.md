@@ -34,8 +34,19 @@ npm install -g neovim
 *Note:* Will need to add the brewed ruby to `$PATH` to override mac-ruby
 ```
 export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH"
+```
 
 To install neovim plugins:
 ```
 vim +PlugInstall
+```
+
+Also install coc-snippets from nvim
+```
+:CocInstall coc-snippets
+```
+
+To debug coc
+```
+:CocOpenLog
 ```

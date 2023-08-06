@@ -1,5 +1,7 @@
 source ~/.git-prompt.sh
 
+export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH"
+
 if [[ `uname` == Darwin ]]; then
   if [ -f `brew --prefix autojump`/etc/autojump ]; then
       source `brew --prefix autojump`/etc/autojump
@@ -12,6 +14,13 @@ if [[ `uname` == Darwin ]]; then
   if [ -f `brew --prefix git-flow`/etc/bash_completion.d/git-flow-completion.bash  ]; then
       source `brew --prefix git-flow`/etc/bash_completion.d/git-flow-completion.bash
   fi
+
+  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+
+  for COMPLETION in "${HOMEBREW_PREFIX}/share/bash-completion/completions/"*
+  do
+    [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+  done
 fi
 
 if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
@@ -136,22 +145,36 @@ function pkill () {
   kill -9 $(ps -Ao pid,comm | grep $1 | grep -v 'grep' | awk '{print $1'}) 2>&1
 }
 
+
 function generate-tags() {
   # use the ctags installed from homebrew
   /opt/homebrew/bin/ctags -R -V --options=$HOME/.ctags.cnf
 }
 
 function rebase-master {
-  git checkout master && git fetch && git rebase
+  (git checkout master || git checkout main) && git fetch && git rebase
 }
 
 function docker-clean {
   docker system prune --all --volumes
 }
 
+function awsv () {
+  aws-vault exec ProductionEngineer -- aws "$@"
+}
+
+# brew install ffmpeg gifsicle
+function mov-to-gif {
+  name=`basename $1 .mov`
+  ffmpeg -i "$name.mov" -pix_fmt rgb8 -r 10 "$name.gif" && gifsicle -O3 "$name.gif" -o "$name.gif"
+}
+
+function add-shadow {
+  convert "$1" \( +clone -background black -shadow 50x10+5+5 \) +swap -background none -layers merge +repage "$1"
+}
+
 alias vim=nvim
 export EDITOR=nvim
-export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH"
 
 if [ -f ~/.env_keys.sh  ]; then
     source ~/.env_keys.sh
