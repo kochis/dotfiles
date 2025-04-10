@@ -1,1 +1,5 @@
-{}
+{
+  "coc-java|global": {
+    "java.neverShowImportFinishNotification": true
+  }
+}

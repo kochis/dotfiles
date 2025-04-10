@@ -43,7 +43,7 @@ Plug 'mustache/vim-mustache-handlebars'
 
 " COC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_global_extensions = ['coc-tsserver']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-java', 'coc-clangd']
 
 if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
   let g:coc_global_extensions += ['coc-eslint']
@@ -236,6 +236,41 @@ endfunction
 
 let g:coc_snippet_next = '<tab>'
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Scala
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Use a local installation of coursier
+let g:coc_metals_install_metals = 0
+let g:coc_metals_coursier_path = '/opt/homebrew/bin/coursier'
+
+" (metals is the scala language server)
+" :CocInstall coc-metals
+" coursier bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:latest.release -o /usr/local/bin/metals -f
+" "
+" Will also need to install a version of java 11 that can be managed with jenv
+"   brew install openjdk@11
+"   jenv add /usr/local/opt/openjdk@11
+"   jenv local 11.0 (in the scala working directory)
+
+" Metals server options
+let g:coc_metals_server_version = 'latest.release'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Java
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd FileType java setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" C++
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd FileType cpp setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType c setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+
+" Setup compile commands for C++
+autocmd FileType cpp nnoremap <leader>b :w <CR> :!g++ -std=c++17 % -o %:r && ./%:r<CR>
+autocmd FileType cpp nnoremap <leader>r :!./%:r<CR>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CtrlP mappings
@@ -285,10 +320,15 @@ if has('mouse')
     " inside Vim -- but luckily, setting it up from within autocmds
     " works
     " autocmd VimEnter * set ttymouse=xterm2
-    autocmd FocusGained * set ttymouse=xterm2
-    autocmd BufEnter * set ttymouse=xterm2
+    " autocmd FocusGained * set ttymouse=xterm2
+    " autocmd BufEnter * set ttymouse=xterm2
   endif
 endif
+
+" Fix for powerline issue
+" https://github.com/vim-airline/vim-airline/issues/2704
+" let g:airline#extensions#whitespace#symbol = '!'
+let g:airline#extensions#whitespace#enabled = 0
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Preview window size hack

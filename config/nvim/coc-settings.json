@@ -1,3 +1,33 @@
 {
-  "eslint.filetypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+  "eslint.filetypes": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "metals.javaHome": "/opt/homebrew/opt/openjdk@11",
+  "metals.sbtScript": "/usr/local/bin/sbt",
+  "metals.serverVersion": "latest.release",
+  "java.import.gradle.java.home": "/opt/homebrew/opt/openjdk@11",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.errors.incompleteClasspath.severity": "ignore",
+  "java.import.gradle.wrapper.enabled": true,
+  "java.saveActions.organizeImports": true,
+  "java.trace.server": "verbose",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-11",
+      "path": "/opt/homebrew/opt/openjdk@11",
+      "default": true
+    }
+  ],
+  "rust-analyzer.enable": true,
+  "rust-analyzer.serverPath": "/Users/craig/.cargo/bin/rust-analyzer",
+  "rust-analyzer.cargo-watch.enable": true,
+  "rust-analyzer.cargo.autoreload": true,
+  "rust-analyzer.procMacro.enable": true,
+  "rust-analyzer.checkOnSave.command": "check",
+  "rust-analyzer.diagnostics.enable": true,
+  "rust-analyzer.trace.server": "verbose",
+  "coc.preferences.debug": true
 }

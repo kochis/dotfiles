@@ -1,6 +1,6 @@
 source ~/.git-prompt.sh
 
-export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:/Users/craig/development/flutter/bin:$PATH"
 
 if [[ `uname` == Darwin ]]; then
   if [ -f `brew --prefix autojump`/etc/autojump ]; then
@@ -76,7 +76,6 @@ alias df='df -kTh'
 alias r='bundle exec rails'
 alias b='bundle exec'
 alias c='bundle exec cap'
-alias gs='bundle exec guard start'
 alias f='git flow feature'
 alias release='git flow release'
 alias rk='b rake'
@@ -96,6 +95,7 @@ export HISTSIZE=10000
 shopt -s histappend
 
 alias be='bundle exec'
+alias gb='git branch --sort=-committerdate'
 alias gf='git fetch'
 alias gm='git merge'
 alias gmom='git merge origin/master'
@@ -156,7 +156,8 @@ function rebase-master {
 }
 
 function docker-clean {
-  docker system prune --all --volumes
+  docker system prune --all --volumes;
+  docker volume ls -q | xargs docker volume rm
 }
 
 function awsv () {
@@ -181,3 +182,23 @@ if [ -f ~/.env_keys.sh  ]; then
 fi
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
+
+# jenv
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+
+# coursier (Scala) install directory
+export PATH="$PATH:/Users/craig/Library/Application Support/Coursier/bin"
+
+# homebrew sbin
+export PATH="/opt/homebrew/sbin:$PATH"
+
+# bin and coreutils
+export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+
+export PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3.3/lib/pkgconfig/
+
+export LANG=en_US.UTF-8
+
+. "$HOME/.cargo/env"

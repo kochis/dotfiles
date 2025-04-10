@@ -15,6 +15,7 @@
 --ignore-dir=coverage
 --ignore-dir=data/local
 --ignore-dir=node_modules
+--ignore-dir=target
 --ignore-file=match:bundle.js
 --ignore-file=is:tags
 --ignore-file=is:tsconfig.tsbuildinfo
