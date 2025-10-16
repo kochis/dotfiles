@@ -41,9 +41,9 @@ To install neovim plugins:
 vim +PlugInstall
 ```
 
-Also install coc-snippets from nvim
+Install coc plugins
 ```
-:CocInstall coc-snippets
+:CocInstall coc-snippets coc-tsserver coc-eslint coc-html coc-metals coc-rust-analyzer coc-java coc-clangd
 ```
 
 To debug coc

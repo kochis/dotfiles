@@ -5,3 +5,5 @@ if [ "$SHELL" != "/bin/bash" ]; then
   echo "To change to bash on mac, run:"
   echo "chsh -s /bin/bash"
 fi
+
+source ~/.bash_profile

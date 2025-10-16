@@ -1,6 +1,6 @@
 source ~/.git-prompt.sh
 
-export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.1.0/bin:/Users/craig/development/flutter/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:/Users/craig/development/flutter/bin:$PATH"
 
 if [[ `uname` == Darwin ]]; then
   if [ -f `brew --prefix autojump`/etc/autojump ]; then
@@ -164,6 +164,10 @@ function awsv () {
   aws-vault exec ProductionEngineer -- aws "$@"
 }
 
+function aws-shell () {
+  aws-vault exec ProductionEngineer
+}
+
 # brew install ffmpeg gifsicle
 function mov-to-gif {
   name=`basename $1 .mov`
@@ -184,8 +188,8 @@ fi
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
 # jenv
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
+# export PATH="$HOME/.jenv/bin:$PATH"
+# eval "$(jenv init -)"
 
 # coursier (Scala) install directory
 export PATH="$PATH:/Users/craig/Library/Application Support/Coursier/bin"
@@ -202,3 +206,7 @@ export PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3.3/lib/pkgconfig/
 export LANG=en_US.UTF-8
 
 . "$HOME/.cargo/env"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

@@ -29,5 +29,6 @@
   "rust-analyzer.checkOnSave.command": "check",
   "rust-analyzer.diagnostics.enable": true,
   "rust-analyzer.trace.server": "verbose",
-  "coc.preferences.debug": true
+  "coc.preferences.debug": true,
+  "snippets.ultisnips.pythonPrompt": false
 }

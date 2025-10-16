@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "coc-tsserver": ">=2.1.0",
-    "coc-eslint": ">=1.6.0",
-    "coc-snippets": ">=3.1.6",
+    "coc-tsserver": ">=2.2.5",
+    "coc-eslint": ">=3.0.14",
+    "coc-snippets": ">=3.4.3",
     "coc-html": ">=1.8.0",
     "coc-metals": ">=1.0.14",
-    "coc-rust-analyzer": ">=0.76.1",
-    "coc-java": ">=1.15.2",
-    "coc-clangd": ">=0.31.0"
+    "coc-rust-analyzer": ">=0.81.2",
+    "coc-java": ">=1.26.1",
+    "coc-clangd": ">=0.32.0"
   },
   "lastUpdate": 1719947316890
 }
