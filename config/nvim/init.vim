@@ -11,7 +11,6 @@ Plug 'tanvirtin/monokai.nvim'
 Plug 'mrtazz/molokai.vim'
 
 " window management
-" Plug 'vim-scripts/bufkill.vim'
 Plug 'nathanaelkane/vim-command-w'
 
 " status lines
@@ -41,13 +40,34 @@ Plug 'peitalin/vim-jsx-typescript'
 " handlebars highlighting
 Plug 'mustache/vim-mustache-handlebars'
 
-" COC
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_global_extensions = ['coc-tsserver', 'coc-java', 'coc-clangd']
+" ============================================================
+" Native LSP + Completion (replaces CoC)
+" ============================================================
+" LSP configurations for common servers
+Plug 'neovim/nvim-lspconfig'
 
-if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  let g:coc_global_extensions += ['coc-eslint']
-endif
+" Mason: portable LSP/DAP/linter/formatter installer
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+
+" Autocompletion
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+
+" Snippet engine (required by nvim-cmp)
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
+
+" Scala Metals support
+Plug 'scalameta/nvim-metals'
+
+" Java (jdtls) enhanced support
+Plug 'mfussenegger/nvim-jdtls'
+
+" Useful LSP UI improvements (optional but nice)
+Plug 'j-hui/fidget.nvim'
 
 call plug#end()
 
@@ -90,14 +110,9 @@ set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,vendor/gems/*,public/javascrip
 " Status bar
 set laststatus=2
 
-" Prevent Vim from clobbering the scrollback buffer. See
-" http://www.shallowsky.com/linux/noaltscreen.html
-" set t_ti= t_te=
-
 set t_Co=256
 let g:CSApprox_attr_map = { 'bold' : 'bold', 'italic' : '', 'sp' : '' }
 let g:CSApprox_eterm = 1
-" colorscheme monokai
 colorscheme molokai
 
 " airline theme
@@ -115,13 +130,7 @@ set modeline
 set modelines=10
 
 " CTags
-" brew install ctags
-" $ ctags -R .
 map <Leader>rt :!ctags --extra=+f -R *<CR><CR>
-
-" jump to definition with coc
-map <C-]> <Plug>(coc-definition)
-" nmap <silent> gd <Plug>(coc-definition)
 
 " Remember last location in file
 if has("autocmd")
@@ -151,7 +160,7 @@ au BufNewFile,BufRead *.pcss set ft=css
 
 au FileType * set softtabstop=2 tabstop=2 shiftwidth=2
 
-" make Python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
+" make Python follow PEP8
 au FileType python set softtabstop=4 tabstop=4 shiftwidth=4 textwidth=79
 
 " highlighting handelbar files
@@ -161,7 +170,6 @@ au BufRead,BufNewFile *.hbs set filetype=handlebars
 set backspace=indent,eol,start
 
 " Inserts the path of the currently edited file into a command
-" Command mode: %%
 cmap %% <C-R>=expand("%:p:h") . "/" <CR>
 
 " close quickfix window if no errors
@@ -189,18 +197,7 @@ nmap <leader>md :silent !mkdir -p %:h<CR>:redraw!<CR>
 " Show 2 lines of context
 set scrolloff=2
 
-" Make the window we're on as big as it makes sense to make it
-"set winwidth=84
-
-" We have to have a winheight bigger than we want to set winminheight. But if
-" we set winheight to be huge before winminheight, the winminheight set will
-" fail.
-"set winheight=5
-"set winminheight=5
-"set winheight=999
-
-" don't delay when you hit esc in terminal vim, this may make arrow keys not
-" work well when ssh'd in
+" don't delay when you hit esc in terminal vim
 set ttimeoutlen=5
 
 function! SaveIfModified()
@@ -215,77 +212,28 @@ nmap <leader>] :call SaveIfModified()<CR>:cnext<CR>
 
 nmap <leader>w :CommandW<CR>
 
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-
-" Make sure snippets are installed: https://github.com/neoclide/coc-snippets
-" :CocInstall coc-snippets
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ CheckBackspace() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-let g:coc_snippet_next = '<tab>'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Scala
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Use a local installation of coursier
-let g:coc_metals_install_metals = 0
-let g:coc_metals_coursier_path = '/opt/homebrew/bin/coursier'
-
-" (metals is the scala language server)
-" :CocInstall coc-metals
-" coursier bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:latest.release -o /usr/local/bin/metals -f
-" "
-" Will also need to install a version of java 11 that can be managed with jenv
-"   brew install openjdk@11
-"   jenv add /usr/local/opt/openjdk@11
-"   jenv local 11.0 (in the scala working directory)
-
-" Metals server options
-let g:coc_metals_server_version = 'latest.release'
+" (Metals config is handled in Lua below)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Java
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd FileType java setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " C++
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd FileType cpp setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd FileType c setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
-
-" Setup compile commands for C++
 autocmd FileType cpp nnoremap <leader>b :w <CR> :!g++ -std=c++17 % -o %:r && ./%:r<CR>
 autocmd FileType cpp nnoremap <leader>r :!./%:r<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" CtrlP mappings
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Don't manage working directory
-" let g:ctrlp_working_path_mode = 0
-"
-" map <leader>f :let g:ctrlp_default_input = 0<cr>:CtrlP<cr>
-" let g:ctrlp_custom_ignore = {
-" \  'dir' : '\.git$\|build$\|bower_components\|node_modules\|dist\|target'
-" \ }
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" FZF mappings (replace CtrlP)
+" FZF mappings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap <silent> <leader>f :Files<CR>
 
@@ -313,23 +261,11 @@ map <C-n> :NERDTreeToggle<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has('mouse')
   set mouse=a
-  if &term =~ "xterm" || &term =~ "screen"
-    " for some reason, doing this directly with 'set ttymouse=xterm2'
-    " doesn't work -- 'set ttymouse?' returns xterm2 but the mouse
-    " makes tmux enter copy mode instead of selecting or scrolling
-    " inside Vim -- but luckily, setting it up from within autocmds
-    " works
-    " autocmd VimEnter * set ttymouse=xterm2
-    " autocmd FocusGained * set ttymouse=xterm2
-    " autocmd BufEnter * set ttymouse=xterm2
-  endif
 endif
 
 let g:perl_host_prog = '/opt/homebrew/bin/perl'
 
 " Fix for powerline issue
-" https://github.com/vim-airline/vim-airline/issues/2704
-" let g:airline#extensions#whitespace#symbol = '!'
 let g:airline#extensions#whitespace#enabled = 0
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -367,11 +303,9 @@ map <leader>gc :Gcommit<cr>
 map <leader>ga :Git add --all<cr>:Gcommit<cr>
 map <leader>gb :Gblame<cr>
 
-" Use j/k in status
 function! BufReadIndex()
   setlocal cursorline
   setlocal nohlsearch
-
   nnoremap <buffer> <silent> j :call search('^#\t.*','W')<Bar>.<CR>
   nnoremap <buffer> <silent> k :call search('^#\t.*','Wbe')<Bar>.<CR>
 endfunction
@@ -379,7 +313,6 @@ endfunction
 autocmd BufReadCmd  *.git/index                      exe BufReadIndex()
 autocmd BufEnter    *.git/index                      silent normal gg0j
 
-" Start in insert mode for commit
 function! BufEnterCommit()
   normal gg0
   if getline('.') == ''
@@ -387,10 +320,7 @@ function! BufEnterCommit()
   end
 endfunction
 autocmd BufEnter    *.git/COMMIT_EDITMSG             exe BufEnterCommit()
-
-" Automatically remove fugitive buffers
 autocmd BufReadPost fugitive://* set bufhidden=delete
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Quit help easily
@@ -402,74 +332,23 @@ function! QuitWithQ()
 endfunction
 autocmd FileType help exe QuitWithQ()
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Powerline configuration, you'll need a powerline patched font.
-" You should probably use inconsolata-g (included in fonts directory)
-" https://github.com/gabrielelana/awesome-terminal-fonts/wiki/OS-X
-"
-" If not, you can patch your own.
-" See: https://github.com/Lokaltog/vim-powerline/tree/develop/fontpatcher
-" You'll probably need this too: https://github.com/jenius/Fontforge-Installer
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" let g:Powerline_symbols = 'fancy'
-" let g:Powerline_stl_path_style = 'short'
-" set encoding=utf-8
-" set termencoding=utf-8
-" call Pl#Theme#RemoveSegment('fugitive:branch')
-" call Pl#Theme#RemoveSegment('fileformat')
-" call Pl#Theme#RemoveSegment('fileencoding')
-" call Pl#Theme#RemoveSegment('scrollpercent')
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" This enables iterm cursor changes from vim. In .tmux.conf you'll need:
-" set-option -g terminal-overrides '*88col*:colors=88,*256col*:colors=256,xterm*:XT:Ms=\E]52;%p1%s;%p2%s\007:Cc=\E]12;%p1%s\007:Cr=\E]112\007:Cs=\E]50;CursorShape=%?%p1%{3}%<%t%{0}%e%p1%{2}%-%;%d\007'
-"
-" Source: https://github.com/Casecommons/casecommons_workstation/blob/master/templates/default/dot_tmux.conf.erb
-"         https://github.com/Casecommons/vim-config/blob/master/init/tmux.vim
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" if exists('$ITERM_PROFILE')
-"   if exists('$TMUX')
-"     let &t_SI = "\<Esc>[3 q"
-"     let &t_EI = "\<Esc>[0 q"
-"   else
-"     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-"     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-"   endif
-" end
-
 " fix cursor in vim in tmux
-" http://blog.terriblelabs.com/blog/2013/02/09/stupid-vim-tricks-how-to-change-insert-mode-cursor-shape-with-tmux/
 let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
 let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
 inoremap <special> <Esc> <Esc>hl
 set guicursor+=i:blinkwait0
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" This fixes pasting from iterm (and some other terminals, but you'll need to
-" adjust the condition) by using "bracketed paste mode"
-" I modified it to work in tmux and not wait for esc (by using f28/f29)
-"
-" See: http://stackoverflow.com/questions/5585129/pasting-code-into-terminal-window-into-vim-on-mac-os-x
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Tmux wrapping borrowed from vitality.vim: https://github.com/sjl/vitality.vim
+" bracketed paste mode for iterm/tmux
 function WrapForTmux(s)
   if !exists('$TMUX')
     return a:s
   endif
-
   let tmux_start = "\<Esc>Ptmux;"
   let tmux_end = "\<Esc>\\"
-
   return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
 endfunction
 
 if exists('$ITERM_PROFILE')
-  " I'm just setting bracketed paste mode in my bashrc now. Setting and
-  " unsetting doesn't work very well with tmux as it affects other shells.
-  " put this in your bashrc: [ -n "$ITERM_PROFILE" ] && printf "\e[?2004h"
-  "
-  " let &t_ti = WrapForTmux("\<Esc>[?2004h") . &t_ti
-  " let &t_te = WrapForTmux("\<Esc>[?2004l") . &t_te
   function XTermPasteBegin(ret)
     set pastetoggle=<Esc>[201~
     set paste
@@ -485,7 +364,7 @@ if exists('$ITERM_PROFILE')
   cmap <f29> <nop>
 end
 
-" Add racket support (use scheme highlighting)
+" Add racket support
 if has("autocmd")
   au BufReadPost *.rkt,*.rktl set filetype=scheme
 endif
@@ -504,3 +383,282 @@ imap <ESC>oA <ESC>ki
 imap <ESC>oB <ESC>ji
 imap <ESC>oC <ESC>li
 imap <ESC>oD <ESC>hi
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Native LSP + Completion Configuration (Lua)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+lua << EOF
+
+-- ────────────────────────────────────────────────────────────
+-- Fidget: LSP progress indicator
+-- ────────────────────────────────────────────────────────────
+require("fidget").setup({})
+
+-- ────────────────────────────────────────────────────────────
+-- Mason: auto-install LSP servers
+-- ────────────────────────────────────────────────────────────
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "ts_ls",
+    "eslint",
+    "clangd",
+    "rust_analyzer",
+  },
+})
+
+-- ────────────────────────────────────────────────────────────
+-- nvim-cmp: Autocompletion (replaces CoC completion)
+-- ────────────────────────────────────────────────────────────
+local cmp = require("cmp")
+local luasnip = require("luasnip")
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-b>"]     = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"]     = cmp.mapping.scroll_docs(4),
+    ["<C-Space>"] = cmp.mapping.complete(),
+    ["<C-e>"]     = cmp.mapping.abort(),
+
+    -- <CR> confirms completion (mirrors your old CoC CR mapping)
+    ["<CR>"] = cmp.mapping.confirm({ select = false }),
+
+    -- <Tab> to select next item or expand snippet (mirrors your old CoC Tab mapping)
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.confirm({ select = true })
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }),
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+  }, {
+    { name = "buffer" },
+    { name = "path" },
+  }),
+})
+
+-- ────────────────────────────────────────────────────────────
+-- LSP: Keybindings via LspAttach autocmd
+-- ────────────────────────────────────────────────────────────
+-- Nvim 0.11 sets some defaults (K for hover, grn for rename, gra for
+-- code_action, grr for references, gri for implementation), but we
+-- add our custom ones here too.
+
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local bufnr = ev.buf
+    local opts = { noremap = true, silent = true, buffer = bufnr }
+
+    -- Navigation (replaces <C-]> → coc-definition)
+    vim.keymap.set("n", "<C-]>",     vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gd",        vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gD",        vim.lsp.buf.declaration, opts)
+
+    -- Actions
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "<leader>e",  vim.diagnostic.open_float, opts)
+
+    -- Diagnostics navigation
+    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+  end,
+})
+
+-- ────────────────────────────────────────────────────────────
+-- LSP Server Configurations (vim.lsp.config + vim.lsp.enable)
+-- ────────────────────────────────────────────────────────────
+-- Global defaults applied to all servers
+vim.lsp.config("*", {
+  capabilities = capabilities,
+})
+
+-- TypeScript / JavaScript  (replaces coc-tsserver)
+vim.lsp.config("ts_ls", {
+  filetypes = {
+    "javascript", "javascriptreact",
+    "typescript", "typescriptreact",
+  },
+})
+
+-- ESLint  (replaces coc-eslint)
+vim.lsp.config("eslint", {
+  filetypes = {
+    "javascript", "javascriptreact",
+    "typescript", "typescriptreact",
+  },
+})
+
+-- Auto-fix eslint on save
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client and client.name == "eslint" then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = ev.buf,
+        callback = function()
+          vim.cmd("silent! EslintFixAll")
+        end,
+      })
+    end
+  end,
+})
+
+-- C / C++  (replaces coc-clangd)
+vim.lsp.config("clangd", {
+  -- uses defaults from nvim-lspconfig's bundled config
+})
+
+-- Rust  (replaces coc-rust-analyzer)
+vim.lsp.config("rust_analyzer", {
+  cmd = { "/Users/craig/.cargo/bin/rust-analyzer" },
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = { autoreload = true },
+      procMacro = { enable = true },
+      checkOnSave = { command = "check" },
+      diagnostics = { enable = true },
+    },
+  },
+})
+
+-- Enable all the above servers
+-- (nvim-lspconfig provides the base cmd/filetypes/root_markers
+-- for each; our vim.lsp.config() calls above merge on top)
+vim.lsp.enable({
+  "ts_ls",
+  "eslint",
+  "clangd",
+  "rust_analyzer",
+})
+
+-- ────────────────────────────────────────────────────────────
+-- Scala Metals  (replaces coc-metals)
+-- nvim-metals has its own attach mechanism, not vim.lsp.enable
+-- ────────────────────────────────────────────────────────────
+local metals_config = require("metals").bare_config()
+metals_config.settings = {
+  showImplicitArguments = true,
+  serverVersion = "latest.release",
+  javaHome = "/opt/homebrew/opt/openjdk@11",
+  sbtScript = "/usr/local/bin/sbt",
+}
+metals_config.capabilities = capabilities
+
+local metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "scala", "sbt", "java" },
+  callback = function()
+    require("metals").initialize_or_attach(metals_config)
+  end,
+  group = metals_group,
+})
+
+-- ────────────────────────────────────────────────────────────
+-- Java (jdtls)  (replaces coc-java)
+-- nvim-jdtls has its own attach mechanism
+-- ────────────────────────────────────────────────────────────
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "java",
+  callback = function()
+    local mason_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
+    local jdtls_found = vim.fn.isdirectory(mason_path) == 1
+
+    if not jdtls_found then
+      vim.notify("jdtls not found. Install via :MasonInstall jdtls", vim.log.levels.WARN)
+      return
+    end
+
+    local jdtls = require("jdtls")
+
+    local os_config = "config_mac"
+    if vim.fn.has("linux") == 1 then
+      os_config = "config_linux"
+    end
+
+    local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+    local workspace_dir = vim.fn.expand("~/.cache/jdtls-workspace/") .. project_name
+
+    local config = {
+      cmd = {
+        "/opt/homebrew/opt/openjdk@11/bin/java",
+        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+        "-Dosgi.bundles.defaultStartLevel=4",
+        "-Declipse.product=org.eclipse.jdt.ls.core.product",
+        "-Dlog.protocol=true",
+        "-Dlog.level=ALL",
+        "-Xms100m",
+        "-Xmx2G",
+        "--add-modules=ALL-SYSTEM",
+        "--add-opens", "java.base/java.util=ALL-UNNAMED",
+        "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+        "-jar", vim.fn.glob(mason_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+        "-configuration", mason_path .. "/" .. os_config,
+        "-data", workspace_dir,
+      },
+      root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
+      settings = {
+        java = {
+          configuration = {
+            updateBuildConfiguration = "automatic",
+            runtimes = {
+              {
+                name = "JavaSE-11",
+                path = "/opt/homebrew/opt/openjdk@11",
+                default = true,
+              },
+            },
+          },
+          import = {
+            gradle = {
+              wrapper = { enabled = true },
+              java = { home = "/opt/homebrew/opt/openjdk@11" },
+            },
+          },
+          saveActions = { organizeImports = true },
+          errors = { incompleteClasspath = { severity = "ignore" } },
+        },
+      },
+      capabilities = capabilities,
+    }
+
+    jdtls.start_or_attach(config)
+  end,
+})
+
+-- ────────────────────────────────────────────────────────────
+-- Diagnostic display settings
+-- ────────────────────────────────────────────────────────────
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  float = { border = "rounded" },
+})
+
+EOF

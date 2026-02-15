@@ -41,12 +41,13 @@ To install neovim plugins:
 vim +PlugInstall
 ```
 
-Install coc plugins
+To install Java language server
 ```
-:CocInstall coc-snippets coc-tsserver coc-eslint coc-html coc-metals coc-rust-analyzer coc-java coc-clangd
+:MasonInstall jdtls
 ```
+Mason manages the installation of LSP servers
 
-To debug coc
+To see the LSP status for any file:
 ```
-:CocOpenLog
+:LspInfo
 ```

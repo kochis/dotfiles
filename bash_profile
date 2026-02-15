@@ -197,9 +197,15 @@ export PATH="$PATH:/Users/craig/Library/Application Support/Coursier/bin"
 # homebrew sbin
 export PATH="/opt/homebrew/sbin:$PATH"
 
+# homebrew includes for CMAKE
+export CMAKE_PREFIX_PATH="/usr/local:/opt/homebrew"
+
 # bin and coreutils
 export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
 export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+
+# claude code
+export PATH="$HOME/.local/bin:$PATH"
 
 export PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3.3/lib/pkgconfig/
 

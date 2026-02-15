@@ -1,8 +1,0 @@
-{
-  "coc-java|global": {
-    "java.neverShowImportFinishNotification": true
-  },
-  "coc-tsserver|global": {
-    "javascript.autoClosingTags.nowarning": true
-  }
-}
