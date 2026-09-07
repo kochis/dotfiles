@@ -1,8 +1,0 @@
-coc-clangd
-coc-eslint
-coc-html
-coc-java
-coc-metals
-coc-rust-analyzer
-coc-snippets
-coc-tsserver

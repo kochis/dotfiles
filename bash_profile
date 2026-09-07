@@ -1,6 +1,6 @@
 source ~/.git-prompt.sh
 
-export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:/Users/craig/development/flutter/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/opt/ruby/bin:$HOME/development/flutter/bin:$PATH"
 
 if [[ `uname` == Darwin ]]; then
   if [ -f `brew --prefix autojump`/etc/autojump ]; then
@@ -192,7 +192,7 @@ export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PR
 # eval "$(jenv init -)"
 
 # coursier (Scala) install directory
-export PATH="$PATH:/Users/craig/Library/Application Support/Coursier/bin"
+export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"
 
 # homebrew sbin
 export PATH="/opt/homebrew/sbin:$PATH"
@@ -210,6 +210,9 @@ export PATH="$HOME/.local/bin:$PATH"
 export PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3.3/lib/pkgconfig/
 
 export LANG=en_US.UTF-8
+
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+export ANDROID_HOME=$HOME/Library/Android/sdk
 
 . "$HOME/.cargo/env"
 

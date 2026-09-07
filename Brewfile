@@ -1,103 +1,65 @@
-tap "bramstein/webfonttools"
-tap "coursier/formulas"
 tap "heroku/brew"
-tap "nativeos/i386-elf-toolchain"
-brew "abseil"
+tap "peak/tap"
+# Search tool like grep, but optimized for programmers
 brew "ack"
-brew "giflib"
+# Library for manipulating PNG images
 brew "libpng"
-brew "lz4"
-brew "webp"
-brew "jpeg-xl"
-brew "aom"
-brew "openssl@3"
-brew "protobuf"
-brew "grpc"
-brew "sqlite"
-brew "apache-arrow"
-brew "python@3.11"
+# Shell extension to jump to frequently used directories
 brew "autojump"
-brew "automake"
-brew "pycparser"
-brew "cffi"
+# Official Amazon AWS command-line interface
 brew "awscli"
-brew "bash"
+# Programmable completion for Bash 3.2
 brew "bash-completion"
-brew "binutils"
-brew "boost"
-brew "freetype"
+# X.Org: Core X11 protocol client library
+brew "libx11"
+# Vector graphics library with cross-device output support
 brew "cairo"
+# Cross-platform make
 brew "cmake"
+# Dependency manager for Cocoa projects
 brew "cocoapods"
-brew "coreutils"
+# Reimplementation of ctags(1)
 brew "ctags"
-brew "curl"
-brew "zeromq"
-brew "czmq"
-brew "docutils"
-brew "duckdb"
-brew "harfbuzz"
-brew "openjdk"
-brew "emscripten"
-brew "libevent"
-brew "unbound"
-brew "gnutls"
-brew "openjpeg"
-brew "leptonica"
-brew "libass"
-brew "librist"
-brew "pango"
-brew "tesseract"
-brew "ffmpeg"
-brew "libtool"
-brew "woff2"
-brew "fontforge"
+# Load/unload environment variables based on $PWD
+brew "direnv"
+# Command-line fuzzy finder written in Go
 brew "fzf"
-brew "gcc"
-brew "pkgconf"
-brew "hdf5"
-brew "proj"
-brew "libgeotiff"
-brew "libheif"
-brew "libspatialite"
-brew "netcdf"
-brew "numpy"
-brew "poppler"
-brew "gdal"
-brew "ghostscript"
-brew "gifsicle"
+# Distributed revision control system
 brew "git"
-brew "guile"
-brew "libraw"
+# Image processing tools collection
+brew "graphicsmagick"
+# Tools and libraries to manipulate images in select formats
 brew "imagemagick"
-brew "jenv"
-brew "jmeter"
-brew "jpeg"
+# Lightweight and flexible command-line JSON processor
 brew "jq"
-brew "luajit"
-brew "maven"
+# Next-gen compiler infrastructure
+brew "llvm"
+# Node version management
 brew "n"
+# Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-brew "openjdk@11"
+# Development kit for the Java programming language
+brew "openjdk"
+# Development kit for the Java programming language
 brew "openjdk@17"
-brew "openvino"
+# Libosmium-based command-line tool for processing OpenStreetMap data
 brew "osmium-tool"
-brew "pmtiles"
-brew "protobuf-c"
-brew "python@3.10"
-brew "qemu"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew "poppler"
+# Reattach process (e.g., tmux) to background
 brew "reattach-to-user-namespace"
-brew "redis"
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
-brew "siege"
-brew "spatialite-tools"
-brew "telnet"
-brew "tippecanoe"
+# Framework for scalable cross-language services development
+brew "thrift"
+# Terminal multiplexer
 brew "tmux"
-brew "unzip"
+# Internet file retriever
 brew "wget"
-brew "bramstein/webfonttools/sfnt2woff"
-brew "coursier/formulas/coursier"
-brew "heroku/brew/heroku"
-brew "nativeos/i386-elf-toolchain/i386-elf-gcc"
-cask "aws-vault"
+# Android SDK component
+cask "android-platform-tools"
+cask "font-jetbrains-mono-nerd-font"
+# Open-source version of the X.Org X Window System
+cask "xquartz"

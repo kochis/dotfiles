@@ -3,7 +3,24 @@ let mapleader = ","
 
 set shell=/bin/bash
 
+" Disable remote-plugin providers. Nothing in this config needs them, and
+" disabling them keeps :checkhealth clean (no pynvim / neovim gem / npm needed).
+let g:loaded_python3_provider = 0
+let g:loaded_ruby_provider = 0
+let g:loaded_perl_provider = 0
+let g:loaded_node_provider = 0
+
+" Bootstrap vim-plug on a fresh machine, then install plugins on first launch.
+let s:plug_path = stdpath('data') . '/site/autoload/plug.vim'
+if empty(glob(s:plug_path))
+  silent execute '!curl -fLo ' . shellescape(s:plug_path) . ' --create-dirs '
+        \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " install plugins using vim-plug
+" NOTE: plugins are installed alongside plug.vim in site/autoload (historical
+" choice; ~/.local/share/nvim/site/autoload/<plugin>/).
 call plug#begin('~/.local/share/nvim/site/autoload')
 
 " monokai theme
@@ -69,6 +86,13 @@ Plug 'mfussenegger/nvim-jdtls'
 " Useful LSP UI improvements (optional but nice)
 Plug 'j-hui/fidget.nvim'
 
+" ============================================================
+" Markdown rendering (render-markdown.nvim)
+" ============================================================
+Plug 'nvim-treesitter/nvim-treesitter', {'branch': 'master', 'do': ':TSUpdate'}
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'MeanderingProgrammer/render-markdown.nvim'
+
 call plug#end()
 
 
@@ -110,9 +134,6 @@ set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,vendor/gems/*,public/javascrip
 " Status bar
 set laststatus=2
 
-set t_Co=256
-let g:CSApprox_attr_map = { 'bold' : 'bold', 'italic' : '', 'sp' : '' }
-let g:CSApprox_eterm = 1
 colorscheme molokai
 
 " airline theme
@@ -171,9 +192,6 @@ set backspace=indent,eol,start
 
 " Inserts the path of the currently edited file into a command
 cmap %% <C-R>=expand("%:p:h") . "/" <CR>
-
-" close quickfix window if no errors
-let g:flow#autoclose = 1
 
 "map quick quit
 map <leader>qq :qa!<cr>
@@ -238,10 +256,10 @@ autocmd FileType cpp nnoremap <leader>r :!./%:r<CR>
 nnoremap <silent> <leader>f :Files<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Ack mappings
+" Grep mappings (ripgrep via fzf.vim's :Rg)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>a :Ack!<space>
-map <leader>A :Ack! <C-R><C-W><CR>
+map <leader>a :Rg<space>
+map <leader>A :Rg <C-R><C-W><CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ARROW KEYS ARE UNACCEPTABLE
@@ -252,9 +270,10 @@ map <Up> :echo "no!"<cr>
 map <Down> :echo "no!"<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" NerdTree mappings
+" File explorer (built-in netrw; NERDTree is no longer installed)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <C-n> :NERDTreeToggle<CR>
+let g:netrw_winsize = 25
+map <C-n> :Lexplore<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " tmux stuff
@@ -262,8 +281,6 @@ map <C-n> :NERDTreeToggle<CR>
 if has('mouse')
   set mouse=a
 endif
-
-let g:perl_host_prog = '/opt/homebrew/bin/perl'
 
 " Fix for powerline issue
 let g:airline#extensions#whitespace#enabled = 0
@@ -279,16 +296,6 @@ endfunction
 au WinEnter * call ResizePreviewWindow()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vroom
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:vroom_map_keys = 0
-let g:vroom_write_all = 1
-let g:vroom_use_bundle_exec = 0
-let g:vroom_spec_command = 'NOEXEC_DISABLE=1 rspec '
-map <leader>t :VroomRunTestFile<cr>
-map <leader>T :VroomRunNearestTest<cr>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Copy paste system clipboard
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>y "*y
@@ -298,10 +305,10 @@ map <leader>P "*P
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Fugitive
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>gs :Gstatus<cr>
-map <leader>gc :Gcommit<cr>
-map <leader>ga :Git add --all<cr>:Gcommit<cr>
-map <leader>gb :Gblame<cr>
+map <leader>gs :Git<cr>
+map <leader>gc :Git commit<cr>
+map <leader>ga :Git add --all<cr>:Git commit<cr>
+map <leader>gb :Git blame<cr>
 
 function! BufReadIndex()
   setlocal cursorline
@@ -332,37 +339,10 @@ function! QuitWithQ()
 endfunction
 autocmd FileType help exe QuitWithQ()
 
-" fix cursor in vim in tmux
-let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+" Cursor shape and bracketed paste are handled natively by neovim
+" (see 'guicursor'); no tmux/iTerm escape hacks needed.
 inoremap <special> <Esc> <Esc>hl
 set guicursor+=i:blinkwait0
-
-" bracketed paste mode for iterm/tmux
-function WrapForTmux(s)
-  if !exists('$TMUX')
-    return a:s
-  endif
-  let tmux_start = "\<Esc>Ptmux;"
-  let tmux_end = "\<Esc>\\"
-  return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
-endfunction
-
-if exists('$ITERM_PROFILE')
-  function XTermPasteBegin(ret)
-    set pastetoggle=<Esc>[201~
-    set paste
-    return a:ret
-  endfunction
-
-  execute "set <f28>=\<Esc>[200~"
-  execute "set <f29>=\<Esc>[201~"
-  map <expr> <f28> XTermPasteBegin("i")
-  imap <expr> <f28> XTermPasteBegin("")
-  vmap <expr> <f28> XTermPasteBegin("c")
-  cmap <f28> <nop>
-  cmap <f29> <nop>
-end
 
 " Add racket support
 if has("autocmd")
@@ -394,6 +374,19 @@ lua << EOF
 -- Fidget: LSP progress indicator
 -- ────────────────────────────────────────────────────────────
 require("fidget").setup({})
+
+-- ────────────────────────────────────────────────────────────
+-- Treesitter: parsers for render-markdown.nvim (and general highlighting)
+-- ────────────────────────────────────────────────────────────
+require("nvim-treesitter.configs").setup({
+  ensure_installed = { "markdown", "markdown_inline" },
+  highlight = { enable = true },
+})
+
+-- ────────────────────────────────────────────────────────────
+-- render-markdown.nvim: render markdown inline in the buffer
+-- ────────────────────────────────────────────────────────────
+require("render-markdown").setup({})
 
 -- ────────────────────────────────────────────────────────────
 -- Mason: auto-install LSP servers
@@ -468,6 +461,10 @@ cmp.setup({
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+-- Homebrew JDK locations (see install_apps.sh / Brewfile)
+local JAVA17_HOME = "/opt/homebrew/opt/openjdk@17"          -- project runtime
+local JDTLS_JAVA  = "/opt/homebrew/opt/openjdk/bin/java"    -- latest JDK, runs jdtls
+
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local bufnr = ev.buf
@@ -534,8 +531,11 @@ vim.lsp.config("clangd", {
 })
 
 -- Rust  (replaces coc-rust-analyzer)
+-- Prefer the rustup-managed rust-analyzer (matches the active toolchain);
+-- fall back to the Mason-installed one otherwise.
+local rustup_ra = vim.fn.expand("~/.cargo/bin/rust-analyzer")
 vim.lsp.config("rust_analyzer", {
-  cmd = { "/Users/craig/.cargo/bin/rust-analyzer" },
+  cmd = { vim.fn.executable(rustup_ra) == 1 and rustup_ra or "rust-analyzer" },
   settings = {
     ["rust-analyzer"] = {
       cargo = { autoreload = true },
@@ -564,8 +564,7 @@ local metals_config = require("metals").bare_config()
 metals_config.settings = {
   showImplicitArguments = true,
   serverVersion = "latest.release",
-  javaHome = "/opt/homebrew/opt/openjdk@11",
-  sbtScript = "/usr/local/bin/sbt",
+  javaHome = JAVA17_HOME,
 }
 metals_config.capabilities = capabilities
 
@@ -581,6 +580,8 @@ vim.api.nvim_create_autocmd("FileType", {
 -- ────────────────────────────────────────────────────────────
 -- Java (jdtls)  (replaces coc-java)
 -- nvim-jdtls has its own attach mechanism
+-- jdtls itself must run on Java 21+ (brew "openjdk"); projects
+-- compile against Java 17 by default (brew "openjdk@17").
 -- ────────────────────────────────────────────────────────────
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
@@ -590,6 +591,10 @@ vim.api.nvim_create_autocmd("FileType", {
 
     if not jdtls_found then
       vim.notify("jdtls not found. Install via :MasonInstall jdtls", vim.log.levels.WARN)
+      return
+    end
+    if vim.fn.executable(JDTLS_JAVA) ~= 1 then
+      vim.notify("jdtls needs Java 21+: brew install openjdk", vim.log.levels.WARN)
       return
     end
 
@@ -605,7 +610,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     local config = {
       cmd = {
-        "/opt/homebrew/opt/openjdk@11/bin/java",
+        JDTLS_JAVA,
         "-Declipse.application=org.eclipse.jdt.ls.core.id1",
         "-Dosgi.bundles.defaultStartLevel=4",
         "-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -627,8 +632,8 @@ vim.api.nvim_create_autocmd("FileType", {
             updateBuildConfiguration = "automatic",
             runtimes = {
               {
-                name = "JavaSE-11",
-                path = "/opt/homebrew/opt/openjdk@11",
+                name = "JavaSE-17",
+                path = JAVA17_HOME,
                 default = true,
               },
             },
@@ -636,7 +641,7 @@ vim.api.nvim_create_autocmd("FileType", {
           import = {
             gradle = {
               wrapper = { enabled = true },
-              java = { home = "/opt/homebrew/opt/openjdk@11" },
+              java = { home = JAVA17_HOME },
             },
           },
           saveActions = { organizeImports = true },
